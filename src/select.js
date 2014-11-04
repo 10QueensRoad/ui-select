@@ -530,6 +530,11 @@
           e.preventDefault();
           e.stopPropagation();
         }
+
+        if(key == KEY.TAB) {
+          ctrl.close(); //When tabbing out, close the dropdown in all cases.
+        }
+
       });
 
       if(KEY.isVerticalMovement(key) && ctrl.items.length > 0){
