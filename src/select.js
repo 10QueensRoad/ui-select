@@ -188,8 +188,10 @@
         ctrl.open = true;
         ctrl.activeMatchIndex = -1;
 
-        ctrl.activeIndex = ctrl.activeIndex >= ctrl.items.length ? 0 : ctrl.activeIndex;
+        ctrl.activeIndex = ctrl.activeIndex >= ctrl.items.length || ctrl.activeIndex < 0 ? 0 : ctrl.activeIndex;
 
+        //The popup is activated so we can invoke the callback.
+        $scope.$eval(ctrl.onDropdownOpenedCallback);
         // Give it time to appear before focus
         $timeout(function() {
           ctrl.search = initSearchValue || ctrl.search;
@@ -304,7 +306,12 @@
     };
 
     ctrl.isActive = function(itemScope) {
-      return ctrl.open && ctrl.items.indexOf(itemScope[ctrl.itemProperty]) === ctrl.activeIndex;
+      var itemIndex = ctrl.items.indexOf(itemScope[ctrl.itemProperty]);
+      if( itemIndex < 0) {
+        return false;
+      }
+
+      return ctrl.open && itemIndex === ctrl.activeIndex;
     };
 
     ctrl.isDisabled = function(itemScope) {
@@ -421,10 +428,21 @@
           else if (ctrl.activeIndex < ctrl.items.length - 1) { ctrl.activeIndex++; }
           break;
         case KEY.UP:
+          if(ctrl.activeIndex < 0) {
+            ctrl.close();
+            break;
+          }
+
           if (!ctrl.open && ctrl.multiple) ctrl.activate(false, true); //In case its the search input in 'multiple' mode
           else if (ctrl.activeIndex > 0) { ctrl.activeIndex--; }
           break;
         case KEY.TAB:
+          //if nothing is selected, close the drop down
+          if(ctrl.activeIndex < 0) {
+            ctrl.close();
+            break;
+          }
+
           if (!ctrl.multiple || ctrl.open) ctrl.select(ctrl.items[ctrl.activeIndex], true);
           break;
         case KEY.ENTER:
@@ -552,6 +570,11 @@
 
     // See https://github.com/ivaynberg/select2/blob/3.4.6/select2.js#L1431
     function _ensureHighlightVisible() {
+      
+      if(ctrl.open === false) {
+        return; 
+      }
+
       var container = $element.querySelectorAll('.ui-select-choices-content');
       var choices = container.querySelectorAll('.ui-select-choices-row');
       if (choices.length < 1) {
@@ -559,6 +582,11 @@
       }
 
       var highlighted = choices[ctrl.activeIndex];
+
+      if(!highlighted) {
+        highlighted = choices[0];
+      }
+
       var posY = highlighted.offsetTop + highlighted.clientHeight - container[0].scrollTop;
       var height = container[0].offsetHeight;
 
@@ -605,6 +633,7 @@
 
         $select.onSelectCallback = $parse(attrs.onSelect);
         $select.onRemoveCallback = $parse(attrs.onRemove);
+        $select.onDropdownOpenedCallback = attrs.onDropdownOpened;
 
         //From view --> model
         ngModel.$parsers.unshift(function (inputValue) {

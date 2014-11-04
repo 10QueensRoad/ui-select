@@ -99,6 +99,11 @@ app.controller('DemoCtrl', function($scope, $http, $timeout) {
     $scope.eventResult = {item: item, model: model};
   };
 
+  $scope.onOpen = function ($select) {
+    //Don't show any active item by default when the dropdown is opened.
+    $select.setActiveItem(undefined);
+  };
+
   $scope.removed = function (item, model) {
     $scope.lastRemoved = {
         item: item,

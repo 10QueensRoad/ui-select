@@ -255,7 +255,7 @@ describe('ui-select tests', function() {
     expect(isDropdownOpened(el2)).toEqual(true);
 
     var el3 = createUiSelect();
-    expect(el3.scope().$select.disabled).toEqual(false);
+    expect(el3.scope().$select.disabled).toBeFalsy(); // The test was returning undefined.
     clickMatch(el3);
     expect(isDropdownOpened(el3)).toEqual(true);
   });
@@ -698,6 +698,100 @@ describe('ui-select tests', function() {
     );
     clickItem(el, 'Samantha');
     expect(scope.selection.selected).toBe('Samantha');
+  });
+
+  it('should invoke dropdown opened callback on dropdown opened with the mouse', function () {
+
+    scope.onDropdownOpened = function ($select){
+      scope.$opened = true;
+    };
+
+    var el = compileTemplate(
+      '<ui-select on-dropdown-opened="onDropdownOpened($select)" ng-model="selection.selected"> \
+        <ui-select-match placeholder="Pick one...">{{$select.selected.name}}</ui-select-match> \
+        <ui-select-choices repeat="person.name as person in people | filter: $select.search"> \
+          <div ng-bind-html="person.name | highlight: $select.search"></div> \
+          <div ng-bind-html="person.email | highlight: $select.search"></div> \
+        </ui-select-choices> \
+      </ui-select>'
+    );
+
+    expect(scope.$opened).toBeFalsy();
+    
+    //Open dropdown does not "open" it. It just changes the model but this is never watched.
+    //The click action will "open" it.
+    el.find(".ui-select-toggle").click();
+    expect(scope.$opened).toEqual(true);
+
+  });
+
+  it('should invoke dropdown opened callback on dropdown opened with the keyboard', function () {
+
+    scope.onDropdownOpened = function ($select){
+      scope.$opened = true;
+    };
+
+    var el = compileTemplate(
+      '<ui-select on-dropdown-opened="onDropdownOpened($select)" ng-model="selection.selected"> \
+        <ui-select-match placeholder="Pick one...">{{$select.selected.name}}</ui-select-match> \
+        <ui-select-choices repeat="person.name as person in people | filter: $select.search"> \
+          <div ng-bind-html="person.name | highlight: $select.search"></div> \
+          <div ng-bind-html="person.email | highlight: $select.search"></div> \
+        </ui-select-choices> \
+      </ui-select>'
+    );
+
+    expect(scope.$opened).toBeFalsy();
+    var searchInput = el.find('.ui-select-focusser'); //Select the focusser.
+    triggerKeydown(searchInput, Key.Down); //Open dropdown
+    expect(scope.$opened).toEqual(true);
+
+  });
+
+  it('should allow setting no active item on dropdown opened', function () {
+
+    scope.onDropdownOpened = function ($select){
+      $select.setActiveItem(undefined);
+    };
+
+    var el = compileTemplate(
+      '<ui-select on-dropdown-opened="onDropdownOpened($select)" ng-model="selection.selected"> \
+        <ui-select-match placeholder="Pick one...">{{$select.selected.name}}</ui-select-match> \
+        <ui-select-choices repeat="person.name as person in people | filter: $select.search"> \
+          <div ng-bind-html="person.name | highlight: $select.search"></div> \
+          <div ng-bind-html="person.email | highlight: $select.search"></div> \
+        </ui-select-choices> \
+      </ui-select>'
+    );
+
+    el.scope().$select.activeIndex = 0
+    var searchInput = el.find('.ui-select-focusser'); //Select the focusser.
+    triggerKeydown(searchInput, Key.Down); //Open dropdown
+    expect(el.scope().$select.activeIndex).toEqual(-1);
+
+  });
+
+  it('should allow changing the active item on dropdown opened', function () {
+
+    scope.onDropdownOpened = function ($select){
+      $select.setActiveItem(scope.people[2]);
+    };
+
+    var el = compileTemplate(
+      '<ui-select on-dropdown-opened="onDropdownOpened($select)" ng-model="selection.selected"> \
+        <ui-select-match placeholder="Pick one...">{{$select.selected.name}}</ui-select-match> \
+        <ui-select-choices repeat="person.name as person in people | filter: $select.search"> \
+          <div ng-bind-html="person.name | highlight: $select.search"></div> \
+          <div ng-bind-html="person.email | highlight: $select.search"></div> \
+        </ui-select-choices> \
+      </ui-select>'
+    );
+
+    el.scope().$select.activeIndex = 0
+    var searchInput = el.find('.ui-select-focusser'); //Select the focusser.
+    triggerKeydown(searchInput, Key.Down); //Open dropdown
+    expect(el.scope().$select.activeIndex).toEqual(2);
+
   });
 
   it('should invoke select callback on select', function () {
