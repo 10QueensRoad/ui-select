@@ -172,7 +172,11 @@
     // Most of the time the user does not want to empty the search input when in typeahead mode
     function _resetSearchInput() {
       if (ctrl.resetSearchInput) {
-        ctrl.search = EMPTY_SEARCH;
+        //Only reset the input if the value is valid. Otherwise leave it visible so the user can correct it.
+        if(ctrl.validSearchValue) {
+          ctrl.search = EMPTY_SEARCH;    
+        }
+        
         //reset activeIndex
         if (ctrl.selected && ctrl.items.length && !ctrl.multiple) {
           ctrl.activeIndex = ctrl.items.indexOf(ctrl.selected);
@@ -568,7 +572,7 @@
     });
 
     function _getCaretPosition(el) {
-      if(angular.isNumber(el.selectionStart)) return el.selectionStart;
+      if(angular.isNumber(el.selectionStart)) return el.selectionEnd;
       // selectionStart is not supported in IE8 and we don't want hacky workarounds so we compromise
       else return el.value.length;
     }
@@ -852,6 +856,8 @@
           $document.off('click', onDocumentClick);
         });
 
+        $select.attrs = attrs;
+
         // Move transcluded elements to their correct position in main template
         transcludeFn(scope, function(clone) {
           // See Transclude in AngularJS http://blog.omkarpatil.com/2012/11/transclude-in-angularjs.html
@@ -878,14 +884,13 @@
       }
     };
   }])
-
   .directive('uiSelectChoices',
     ['uiSelectConfig', 'RepeatParser', 'uiSelectMinErr', '$compile',
     function(uiSelectConfig, RepeatParser, uiSelectMinErr, $compile) {
 
     return {
       restrict: 'EA',
-      require: '^uiSelect',
+      require: ['^uiSelect','^?form'],
       replace: true,
       transclude: true,
       templateUrl: function(tElement) {
@@ -898,7 +903,10 @@
 
         if (!tAttrs.repeat) throw uiSelectMinErr('repeat', "Expected 'repeat' expression.");
 
-        return function link(scope, element, attrs, $select, transcludeFn) {
+        return function link(scope, element, attrs, ctrls, transcludeFn) {
+
+          var $select =  ctrls[0];
+          var form = ctrls[1];
           
           // var repeat = RepeatParser.parse(attrs.repeat);
           var groupByExp = attrs.groupBy;
@@ -933,6 +941,14 @@
             if(newValue && !$select.open && $select.multiple) $select.activate(false, true);
             $select.activeIndex = 0;
             $select.refresh(attrs.refresh);
+
+            var validSearchValue = !newValue || $select.items.length !== 0;
+            
+            if(form) {
+              form[$select.attrs.name].$setValidity('invalidSearchValue', validSearchValue);
+            }
+            $select.validSearchValue = validSearchValue;
+
           });
 
           attrs.$observe('refreshDelay', function() {

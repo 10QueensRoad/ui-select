@@ -111,9 +111,9 @@
   <p>Selected: {{country.selected}}</p> -->
 
   <h1>Multi Selection Demos</h1>
-
+  <form name="form">
   <h3>Array of strings</h3>
-  <ui-select multiple ng-model="multipleDemo.colors" theme="bootstrap" ng-disabled="disabled" style="width: 300px;">
+  <ui-select name="deselectCallback1" multiple ng-model="multipleDemo.colors" theme="bootstrap" ng-disabled="disabled" style="width: 300px;">
     <ui-select-match placeholder="Select colors...">{{$item}}</ui-select-match>
     <ui-select-choices repeat="color in availableColors | filter:$select.search">
       {{color}}
@@ -122,7 +122,7 @@
   <p>Selected: {{multipleDemo.colors}}</p>
   <hr>
   <h3>Array of objects</h3>
-  <ui-select multiple ng-model="multipleDemo.selectedPeople" theme="bootstrap" ng-disabled="disabled" style="width: 800px;">
+  <ui-select name="deselectCallback0" multiple ng-model="multipleDemo.selectedPeople" theme="bootstrap" ng-disabled="disabled" style="width: 800px;">
     <ui-select-match placeholder="Select person...">{{$item.name}} &lt;{{$item.email}}&gt;</ui-select-match>
     <ui-select-choices repeat="person in people | propsFilter: {name: $select.search, age: $select.search}">
       <div ng-bind-html="person.name | highlight: $select.search"></div>
@@ -136,7 +136,8 @@
 
   <hr>
   <h3>Deselect callback with single property binding</h3>
-  <ui-select multiple ng-model="multipleDemo.deSelectedPeople" on-dropdown-opened="onOpen($select)" on-remove="removed($item, $model)" theme="bootstrap" ng-disabled="disabled" style="width: 800px;">
+  <span ng-show="form.deselectCallback.$error.invalidSearchValue">This email format is invalid!</span>
+  <ui-select name="deselectCallback" multiple ng-model="multipleDemo.deSelectedPeople" on-dropdown-opened="onOpen($select)" on-remove="removed($item, $model)" theme="bootstrap" ng-disabled="disabled" style="width: 800px;">
     <ui-select-match placeholder="Select person...">{{$item.name}} &lt;{{$item.email}}&gt;</ui-select-match>
     <ui-select-choices repeat="person.email as person in people | propsFilter: {name: $select.search, age: $select.search}">
       <div ng-bind-html="person.name | highlight: $select.search"></div>
@@ -151,7 +152,7 @@
 
   <hr>
   <h3>Array of objects with single property binding</h3>
-  <ui-select multiple ng-model="multipleDemo.selectedPeopleSimple" theme="bootstrap" ng-disabled="disabled" style="width: 800px;">
+  <ui-select name="deselectCallback2" multiple ng-model="multipleDemo.selectedPeopleSimple" theme="bootstrap" ng-disabled="disabled" style="width: 800px;">
     <ui-select-match placeholder="Select person...">{{$item.name}} &lt;{{$item.email}}&gt;</ui-select-match>
     <ui-select-choices repeat="person.email as person in people | propsFilter: {name: $select.search, age: $select.search}">
       <div ng-bind-html="person.name | highlight: $select.search"></div>
@@ -165,7 +166,7 @@
 
   <hr>
   <h3>Array of objects (with groupBy)</h3>
-  <ui-select multiple ng-model="multipleDemo.selectedPeopleWithGroupBy" theme="bootstrap" ng-disabled="disabled" style="width: 800px;">
+  <ui-select name="deselectCallback3" multiple ng-model="multipleDemo.selectedPeopleWithGroupBy" theme="bootstrap" ng-disabled="disabled" style="width: 800px;">
     <ui-select-match placeholder="Select person...">{{$item.name}} &lt;{{$item.email}}&gt;</ui-select-match>
     <ui-select-choices group-by="someGroupFn" repeat="person in people | propsFilter: {name: $select.search, age: $select.search}">
       <div ng-bind-html="person.name | highlight: $select.search"></div>
@@ -178,6 +179,7 @@
   <p>Selected: {{multipleDemo.selectedPeopleWithGroupBy}}</p>
 
   <div style="height:500px"></div>
+  </form>
 
 </body>
 </html>

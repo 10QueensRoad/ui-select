@@ -1486,6 +1486,35 @@ describe('ui-select tests', function() {
 
     });
 
+    it('should make the form invalid when the search value is wrong', function () {
+
+      scope.selection.selectedMultiple = ['wladimir@email.com', 'samantha@email.com'];
+
+      var el = compileTemplate(
+          '<form name="form">\
+            <ui-select id="testName" name="testName" multiple ng-model="selection.selectedMultiple" theme="bootstrap" style="width: 800px;"> \
+                <ui-select-match placeholder="Pick one...">{{$item.name}} &lt;{{$item.email}}&gt;</ui-select-match> \
+                <ui-select-choices repeat="person.email as person in people | filter: $select.search" \
+                  refresh="fetchFromServer($select.search)" refresh-delay="0"> \
+                  <div ng-bind-html="person.name | highlight: $select.search"></div> \
+                  <div ng-bind-html="person.email | highlight: $select.search"></div> \
+                </ui-select-choices> \
+            </ui-select>\
+          </form>'
+      );
+
+      var searchInput = el.find('.ui-select-search');
+      var uiSelect = el.find('#testName');
+
+      setSearchText(uiSelect, 'ni')
+      expect(el.scope().form.testName.$error.invalidSearchValue).toBeFalsy();
+      setSearchText(uiSelect, 'nii');
+      expect(el.scope().form.testName.$error.invalidSearchValue).toBeTruthy();
+      setSearchText(uiSelect, '');
+      expect(el.scope().form.testName.$error.invalidSearchValue).toBeFalsy();
+      
+    });
+
     it('should watch changes for $select.selected and update formatted value correctly', function () {
 
       scope.selection.selectedMultiple = ['wladimir@email.com', 'samantha@email.com'];
