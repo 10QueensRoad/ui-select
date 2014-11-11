@@ -136,8 +136,9 @@
 
   <hr>
   <h3>Deselect callback with single property binding</h3>
+  <div>search val: {{opts.searchVal}} <button ng-click="opts.searchVal = ''">clear</button></div>
   <span ng-show="form.deselectCallback.$error.invalidSearchValue">This email format is invalid!</span>
-  <ui-select name="deselectCallback" multiple ng-model="multipleDemo.deSelectedPeople" on-dropdown-opened="onOpen($select)" on-remove="removed($item, $model)" theme="bootstrap" ng-disabled="disabled" style="width: 800px;">
+  <ui-select name="deselectCallback" multiple ng-model="multipleDemo.deSelectedPeople" on-dropdown-opened="onOpen($select)" on-remove="removed($item, $model)" theme="bootstrap" ng-disabled="disabled" style="width: 800px;" type-ahead="opts.searchVal">
     <ui-select-match placeholder="Select person...">{{$item.name}} &lt;{{$item.email}}&gt;</ui-select-match>
     <ui-select-choices repeat="person.email as person in people | propsFilter: {name: $select.search, age: $select.search}">
       <div ng-bind-html="person.name | highlight: $select.search"></div>

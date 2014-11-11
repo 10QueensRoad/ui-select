@@ -1,7 +1,7 @@
 /*!
  * ui-select
  * http://github.com/angular-ui/ui-select
- * Version: 0.8.3 - 2014-11-10T13:29:19.962Z
+ * Version: 0.8.3 - 2014-11-11T03:11:37.852Z
  * License: MIT
  */
 
@@ -157,7 +157,7 @@
     ctrl.activeIndex = 0;
     ctrl.activeMatchIndex = -1;
     ctrl.items = [];
-    ctrl.selected = undefined;
+    ctrl.selected = '';
     ctrl.open = false;
     ctrl.focus = false;
     ctrl.focusser = undefined; //Reference to input element used to handle focus events  
@@ -652,6 +652,9 @@
         $select.onRemoveCallback = $parse(attrs.onRemove);
         $select.onDropdownOpenedCallback = attrs.onDropdownOpened;
 
+
+
+
         //From view --> model
         ngModel.$parsers.unshift(function (inputValue) {
           var locals = {},
@@ -720,6 +723,8 @@
 
         //Set reference to ngModel from uiSelectCtrl
         $select.ngModel = ngModel;
+        
+        $select.attrs = attrs;
 
         //Idea from: https://github.com/ivaynberg/select2/blob/79b5bf6db918d7560bdd959109b7bcfb47edaf43/select2.js#L1954
         var focusser = angular.element("<input ng-disabled='$select.disabled' class='ui-select-focusser ui-select-offscreen' type='text' aria-haspopup='true' role='button' />");
@@ -864,8 +869,6 @@
           $document.off('click', onDocumentClick);
         });
 
-        $select.attrs = attrs;
-
         // Move transcluded elements to their correct position in main template
         transcludeFn(scope, function(clone) {
           // See Transclude in AngularJS http://blog.omkarpatil.com/2012/11/transclude-in-angularjs.html
@@ -893,8 +896,8 @@
     };
   }])
   .directive('uiSelectChoices',
-    ['uiSelectConfig', 'RepeatParser', 'uiSelectMinErr', '$compile',
-    function(uiSelectConfig, RepeatParser, uiSelectMinErr, $compile) {
+    ['uiSelectConfig', 'RepeatParser', 'uiSelectMinErr', '$compile','$parse',
+    function(uiSelectConfig, RepeatParser, uiSelectMinErr, $compile, $parse) {
 
     return {
       restrict: 'EA',
@@ -950,6 +953,8 @@
             $select.activeIndex = 0;
             $select.refresh(attrs.refresh);
 
+            // $select.typeAhead = newValue;
+
             var validSearchValue = !newValue || $select.items.length !== 0;
             
             if(form) {
@@ -957,8 +962,20 @@
             }
             $select.validSearchValue = validSearchValue;
 
+            //Bind the typeAhead model to the search value
+            if($select.attrs.typeAhead) {
+              var scopeVal = $parse($select.attrs.typeAhead);
+              scopeVal.assign(scope, newValue);  
+            }
+
           });
 
+          if($select.attrs.typeAhead) {
+            scope.$watch($select.attrs.typeAhead, function(newVal){
+              $select.search = newVal;
+            });   
+          }
+          
           attrs.$observe('refreshDelay', function() {
             // $eval() is needed otherwise we get a string instead of a number
             var refreshDelay = scope.$eval(attrs.refreshDelay);

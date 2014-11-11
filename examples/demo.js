@@ -75,6 +75,8 @@ app.controller('DemoCtrl', function($scope, $http, $timeout) {
 
   };
 
+  $scope.opts = {};
+
   $scope.personAsync = {selected : "wladimir@email.com"};
   $scope.peopleAsync = [];
 
