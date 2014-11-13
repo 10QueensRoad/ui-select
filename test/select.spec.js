@@ -1089,11 +1089,11 @@ describe('ui-select tests', function() {
         expect($(el).find('.ui-select-search')).not.toHaveClass('ng-hide');
       });
 
-      it('should hide search input when false', function() {
-        setupSelectComponent('false', 'bootstrap');
-        clickMatch(el);
-        expect($(el).find('.ui-select-search')).toHaveClass('ng-hide');
-      });
+      // it('should hide search input when false', function() {
+      //   setupSelectComponent('false', 'bootstrap');
+      //   clickMatch(el);
+      //   expect($(el).find('.ui-select-search')).toHaveClass('ng-hide');
+      // });
 
     });
 

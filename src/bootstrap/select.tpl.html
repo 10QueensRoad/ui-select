@@ -3,7 +3,8 @@
   <input type="text" autocomplete="off" tabindex="-1"
          class="form-control ui-select-search"
          placeholder="{{$select.placeholder}}"
-         ng-model="$select.search"
-         ng-show="$select.searchEnabled && $select.open">
+         ng-show="$select.open"
+         readonly="true">
+         <!-- ng-model="$select.search" -->
   <div class="ui-select-choices"></div>
 </div>
