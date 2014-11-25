@@ -451,7 +451,9 @@
           break;
         case KEY.ENTER:
           if(ctrl.open){
-            ctrl.select(ctrl.items[ctrl.activeIndex]);
+             if (ctrl.activeIndex >= 0) {
+              ctrl.select(ctrl.items[ctrl.activeIndex]);
+             }
           } else {
             ctrl.activate(false, true); //In case its the search input in 'multiple' mode
           }
