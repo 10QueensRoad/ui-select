@@ -2,16 +2,18 @@
   <div>
     <div class="ui-select-match"></div>
     <input type="text"
-           autocomplete="off" 
-           autocorrect="off" 
-           autocapitalize="off" 
-           spellcheck="false" 
+           autocomplete="off"
+           autocorrect="off"
+           autocapitalize="off"
+           spellcheck="false"
            class="ui-select-search input-xs"
            placeholder="{{$select.getPlaceholder()}}"
            ng-disabled="$select.disabled"
            ng-hide="$select.disabled"
            ng-click="$select.activate()"
            ng-model="$select.search"
+           id="{{$select.id}}"
+           aria-describedby="{{$select.id}}-matches"
            name="{{$select.attrs.name}}">
   </div>
   <div class="ui-select-choices"></div>

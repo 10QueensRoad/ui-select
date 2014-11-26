@@ -152,7 +152,7 @@
     ctrl.selected = '';
     ctrl.open = false;
     ctrl.focus = false;
-    ctrl.focusser = undefined; //Reference to input element used to handle focus events  
+    ctrl.focusser = undefined; //Reference to input element used to handle focus events
     ctrl.disabled = undefined; // Initialized inside uiSelect directive link function
     ctrl.searchEnabled = undefined; // Initialized inside uiSelect directive link function
     ctrl.resetSearchInput = undefined; // Initialized inside uiSelect directive link function
@@ -174,9 +174,9 @@
       if (ctrl.resetSearchInput) {
         //Only reset the input if the value is valid. Otherwise leave it visible so the user can correct it.
         if(ctrl.validSearchValue) {
-          ctrl.search = EMPTY_SEARCH;    
+          ctrl.search = EMPTY_SEARCH;
         }
-        
+
         //reset activeIndex
         if (ctrl.selected && ctrl.items.length && !ctrl.multiple) {
           ctrl.activeIndex = ctrl.items.indexOf(ctrl.selected);
@@ -258,7 +258,7 @@
               var filteredItems = items.filter(function(i) {return ctrl.selected.indexOf(i) < 0;});
               setItemsFn(filteredItems);
             }else{
-              setItemsFn(items);              
+              setItemsFn(items);
             }
             ctrl.ngModel.$modelValue = null; //Force scope model value and ngModel value to be out of sync to re-run formatters
 
@@ -268,14 +268,14 @@
       });
 
       if (ctrl.multiple){
-        //Remove already selected items 
+        //Remove already selected items
         $scope.$watchCollection('$select.selected', function(selectedItems){
           var data = ctrl.parserResult.source($scope);
           if (!selectedItems.length) {
-            setItemsFn(data);            
+            setItemsFn(data);
           }else{
             var filteredItems = data.filter(function(i) {return selectedItems.indexOf(i) < 0;});
-            setItemsFn(filteredItems);            
+            setItemsFn(filteredItems);
           }
           ctrl.sizeSearchInput();
         });
@@ -319,7 +319,7 @@
     };
 
     ctrl.isDisabled = function(itemScope) {
-      
+
       if (!ctrl.open) return;
 
       var itemIndex = ctrl.items.indexOf(itemScope[ctrl.itemProperty]);
@@ -359,7 +359,7 @@
 
     // Closes the dropdown
     ctrl.close = function(skipFocusser) {
-      if (!ctrl.open) return;        
+      if (!ctrl.open) return;
       _resetSearchInput();
       ctrl.open = false;
       if (!ctrl.multiple){
@@ -399,7 +399,7 @@
       return ctrl.placeholder;
     };
 
-    var containerSizeWatch; 
+    var containerSizeWatch;
     ctrl.sizeSearchInput = function(){
       var input = _searchInput[0],
           container = _searchInput.parent().parent()[0];
@@ -470,7 +470,7 @@
     // Handles selected options in "multiple" mode
     function _handleMatchSelection(key){
       var caretPosition = _getCaretPosition(_searchInput[0]),
-          length = ctrl.selected.length, 
+          length = ctrl.selected.length,
           // none  = -1,
           first = 0,
           last  = length-1,
@@ -493,7 +493,7 @@
             break;
           case KEY.RIGHT:
             // Open drop-down
-            if(!~ctrl.activeMatchIndex || curr === last){ 
+            if(!~ctrl.activeMatchIndex || curr === last){
               ctrl.activate();
               return false;
             }
@@ -516,7 +516,7 @@
               return curr;
             }
             else return false;
-        }      
+        }
       }
 
       newIndex = getNewActiveMatchIndex();
@@ -547,7 +547,7 @@
         if (!processed && ctrl.items.length > 0) {
           processed = _handleDropDownSelection(key);
         }
-        
+
         if (processed  && key != KEY.TAB) {
           //TODO Check si el tab selecciona aun correctamente
           //Crear test
@@ -581,9 +581,9 @@
 
     // See https://github.com/ivaynberg/select2/blob/3.4.6/select2.js#L1431
     function _ensureHighlightVisible() {
-      
+
       if(ctrl.open === false) {
-        return; 
+        return;
       }
 
       var container = $element.querySelectorAll('.ui-select-choices-content');
@@ -641,6 +641,8 @@
         var searchInput = element.querySelectorAll('input.ui-select-search');
 
         $select.multiple = (angular.isDefined(attrs.multiple)) ? (attrs.multiple === '') ? true : (attrs.multiple.toLowerCase() === 'true') : false;
+        $select.id = attrs.id;
+        element.removeAttr('id');
 
         $select.onSelectCallback = $parse(attrs.onSelect);
         $select.onRemoveCallback = $parse(attrs.onRemove);
@@ -672,7 +674,7 @@
 
         //From model --> view
         ngModel.$formatters.unshift(function (inputValue) {
-          var data = $select.parserResult.source (scope, { $select : {search:''}}), //Overwrite $search 
+          var data = $select.parserResult.source (scope, { $select : {search:''}}), //Overwrite $search
               locals = {},
               result;
           if (data){
@@ -717,7 +719,7 @@
 
         //Set reference to ngModel from uiSelectCtrl
         $select.ngModel = ngModel;
-        
+
         $select.attrs = attrs;
 
         //Idea from: https://github.com/ivaynberg/select2/blob/79b5bf6db918d7560bdd959109b7bcfb47edaf43/select2.js#L1954
@@ -726,7 +728,7 @@
         if(attrs.tabindex){
           //tabindex might be an expression, wait until it contains the actual value before we set the focusser tabindex
           attrs.$observe('tabindex', function(value) {
-            //If we are using multiple, add tabindex to the search input 
+            //If we are using multiple, add tabindex to the search input
             if($select.multiple){
               searchInput.attr("tabindex", value);
             } else {
@@ -781,7 +783,7 @@
             if (e.which === KEY.TAB || KEY.isControl(e) || KEY.isFunctionKey(e) || e.which === KEY.ESC || e.which == KEY.ENTER || e.which === KEY.BACKSPACE) {
               return;
             }
-            
+
             $select.activate(focusser.val()); //User pressed some regular key, so we pass it to the search input
             focusser.val('');
             scope.$digest();
@@ -912,7 +914,7 @@
 
           var $select =  ctrls[0];
           var form = ctrls[1];
-          
+
           // var repeat = RepeatParser.parse(attrs.repeat);
           var groupByExp = attrs.groupBy;
 
@@ -950,7 +952,7 @@
             // $select.typeAhead = newValue;
 
             var validSearchValue = !newValue || $select.items.length !== 0;
-            
+
             if(form) {
               form[$select.attrs.name].$setValidity('invalidSearchValue', validSearchValue);
             }
@@ -959,7 +961,7 @@
             //Bind the typeAhead model to the search value
             if($select.attrs.typeAhead) {
               var scopeVal = $parse($select.attrs.typeAhead);
-              scopeVal.assign(scope, newValue);  
+              scopeVal.assign(scope, newValue);
             }
 
           });
@@ -967,9 +969,9 @@
           if($select.attrs.typeAhead) {
             scope.$watch($select.attrs.typeAhead, function(newVal){
               $select.search = newVal;
-            });   
+            });
           }
-          
+
           attrs.$observe('refreshDelay', function() {
             // $eval() is needed otherwise we get a string instead of a number
             var refreshDelay = scope.$eval(attrs.refreshDelay);
@@ -1002,6 +1004,7 @@
         return theme + (multi ? '/match-multiple.tpl.html' : '/match.tpl.html');
       },
       link: function(scope, element, attrs, $select) {
+        // $select.id = 'balls';
         attrs.$observe('placeholder', function(placeholder) {
           $select.placeholder = placeholder !== undefined ? placeholder : uiSelectConfig.placeholder;
         });

@@ -109,8 +109,8 @@
 }
 
 .ui-select-multiple.ui-select-bootstrap .ui-select-match .close {
-  font-size: 1.6em;
-  line-height: 0.75;
+  font-size: 12px;
+  padding: 2px 0px 2px 2px;
 }
 
 .ui-select-multiple.ui-select-bootstrap .ui-select-match-item{
