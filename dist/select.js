@@ -1,7 +1,7 @@
 /*!
  * ui-select
  * http://github.com/angular-ui/ui-select
- * Version: 0.8.3 - 2014-11-26T07:06:10.197Z
+ * Version: 0.8.3 - 2014-12-08T03:18:22.913Z
  * License: MIT
  */
 
@@ -374,6 +374,10 @@
         $timeout(function(){
           ctrl.focusser.prop('disabled', false);
           if (!skipFocusser) ctrl.focusser[0].focus();
+        },0,false);
+      } else {
+        $timeout(function(){
+          _searchInput[0].focus();
         },0,false);
       }
     };
@@ -1012,7 +1016,6 @@
         return theme + (multi ? '/match-multiple.tpl.html' : '/match.tpl.html');
       },
       link: function(scope, element, attrs, $select) {
-        // $select.id = 'balls';
         attrs.$observe('placeholder', function(placeholder) {
           $select.placeholder = placeholder !== undefined ? placeholder : uiSelectConfig.placeholder;
         });

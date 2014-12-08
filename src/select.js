@@ -367,6 +367,10 @@
           ctrl.focusser.prop('disabled', false);
           if (!skipFocusser) ctrl.focusser[0].focus();
         },0,false);
+      } else {
+        $timeout(function(){
+          _searchInput[0].focus();
+        },0,false);
       }
     };
 
