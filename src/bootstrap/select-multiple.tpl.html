@@ -1,7 +1,7 @@
 <div class="ui-select-multiple ui-select-bootstrap dropdown form-control" ng-class="{open: $select.open}">
   <div>
     <div class="ui-select-match"></div>
-    <input type="text"
+      <input type="text"
            autocomplete="off"
            autocorrect="off"
            autocapitalize="off"
@@ -15,6 +15,7 @@
            id="{{$select.id}}"
            aria-describedby="{{$select.id}}-matches"
            name="{{$select.attrs.name}}">
+      <span class="sr-only" aria-live="polite" aria-atomic="true">{{$select.currentItemText() ? 'select ' + $select.currentItemText() : ''}}</span>
   </div>
   <div class="ui-select-choices"></div>
 </div>

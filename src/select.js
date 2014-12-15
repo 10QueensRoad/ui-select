@@ -652,9 +652,6 @@
         $select.onRemoveCallback = $parse(attrs.onRemove);
         $select.onDropdownOpenedCallback = attrs.onDropdownOpened;
 
-
-
-
         //From view --> model
         ngModel.$parsers.unshift(function (inputValue) {
           var locals = {},
@@ -910,7 +907,7 @@
         return theme + '/choices.tpl.html';
       },
 
-      compile: function(tElement, tAttrs) {
+      compile: function(tElement, tAttrs, transclude) {
 
         if (!tAttrs.repeat) throw uiSelectMinErr('repeat', "Expected 'repeat' expression.");
 
@@ -918,6 +915,20 @@
 
           var $select =  ctrls[0];
           var form = ctrls[1];
+
+          var currentItemScope = scope.$new();
+          var currentItemScopeHtml = null;
+          transclude(currentItemScope, function(clone, innerScope) {
+            currentItemScopeHtml = $compile(clone)(innerScope);
+          });
+
+          $select.currentItemText = function() {
+            if ($select.open && $select.activeIndex !== -1) {
+              currentItemScope[$select.itemProperty] = $select.items[$select.activeIndex];
+              return currentItemScopeHtml.text();
+            }
+          };
+
 
           // var repeat = RepeatParser.parse(attrs.repeat);
           var groupByExp = attrs.groupBy;
